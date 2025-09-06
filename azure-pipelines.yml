@@ -52,10 +52,25 @@ stages:
            environmentServiceNameAzureRM: '$(SERVICE_CONNECTION)'
 
  - stage: codescanning
+   displayName: tfscan
    jobs:
      - job: tfsecscanning
        steps:
        - task: tfsec@1
+         continueOnError: true
          inputs:
            version: 'v1.26.0'
            dir: '$(WORK_DIR)'
+
+ - stage: apply
+   displayName: terrafom apply
+   jobs:
+     - job: terraformapply
+       pool: server
+       steps:
+       - task: ManualValidation@1
+         displayName: manual validation
+         inputs:
+           notifyUsers: 'bappakn22@gmail.com'
+           approvers: 'bappakn22@gmail.com'
+           instructions: 'please approve'
