@@ -63,14 +63,53 @@ stages:
            dir: '$(WORK_DIR)'
 
  - stage: apply
-   displayName: terrafom apply
+   dependsOn: codescanning
+   displayName: manual approval
    jobs:
-     - job: terraformapply
+     - job: manualvalidation
        pool: server
        steps:
        - task: ManualValidation@1
-         displayName: manual validation
+         displayName: manual validation by manager
          inputs:
            notifyUsers: 'bappakn22@gmail.com'
            approvers: 'bappakn22@gmail.com'
            instructions: 'please approve'
+          
+
+
+     - job: terraformapply
+       dependsOn: manualvalidation
+       pool:
+        vmImage: ubuntu-latest 
+       condition: succeeded ()
+
+
+       steps:
+       - task: TerraformInstaller@1
+         displayName: terraform install
+         inputs:
+           terraformVersion: 'latest'
+
+       - task: TerraformTask@5
+         displayName: terraform init
+         inputs:
+           provider: 'azurerm'
+           command: 'init'
+           workingDirectory: '$(WORK_DIR)'
+           backendServiceArm: '$(SERVICE_CONNECTION)'
+           backendAzureRmOverrideSubscriptionID: '8b10287d-12d6-41e3-b62c-33457c006e96'
+           backendAzureRmResourceGroupName: 'bappa-remotestate-rg'
+           backendAzureRmStorageAccountName: 'bappastatefiles'
+           backendAzureRmContainerName: 'statecfiles'
+           backendAzureRmKey: 'bastiondev.tfstate'
+
+       - task: TerraformTask@5
+         inputs:
+           provider: 'azurerm'
+           command: 'apply'
+           workingDirectory: '$(WORK_DIR)'
+           commandOptions: '--auto-approve'
+           environmentServiceNameAzureRM: '$(SERVICE_CONNECTION)'
+      
+   
