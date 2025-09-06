@@ -1,0 +1,43 @@
+name : 'bastion infra project'
+
+
+trigger : none
+
+pool: 
+  name: infra_agentpool
+
+variables:
+  WORK_DIR: '$(System.DefaultWorkingDirectory)/environments /dev/'
+  SERVICE_CONNECTION: 'infra-azure-connection'
+
+
+stages:
+ - stage: initvalidateplan
+   displayName: terraform init/validate/plan
+   jobs:
+     - job: jobinitvalidateplan
+       steps:
+        - task: TerraformTask@5
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            workingDirectory: '$(WORK_DIR)'
+            backendServiceArm: $(SERVICE_CONNECTION)
+            backendAzureRmStorageAccountName: 'bappastatefiles'
+            backendAzureRmContainerName: 'statecfiles'
+            backendAzureRmKey: 'bastiondev.tfstate'
+
+        - task: TerraformTask@5
+          displayName: terraform validate
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+            workingDirectory: '$(WORK_DIR)'
+
+        - task: TerraformTask@5
+          displayName: terraform plan
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            workingDirectory: '$(WORK_DIR)'
+            environmentServiceNameAzureRM: $(SERVICE_CONNECTION)
