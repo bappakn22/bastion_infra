@@ -1,4 +1,4 @@
-name : 'bastion infra project'
+name: 'bastion infra project'
 
 
 trigger : none
@@ -7,7 +7,7 @@ pool:
   name: infra_agentpool
 
 variables:
-  WORK_DIR: '$(System.DefaultWorkingDirectory)/environments /dev/'
+  WORK_DIR: '$(System.DefaultWorkingDirectory)/environments/dev'
   SERVICE_CONNECTION: 'infra-azure-connection'
 
 
@@ -49,4 +49,4 @@ stages:
            provider: 'azurerm'
            command: 'plan'
            workingDirectory: '$(WORK_DIR)'
-           environmentServiceNameAzureRM: $(SERVICE_CONNECTION)
+           environmentServiceNameAzureRM: '$(SERVICE_CONNECTION)'
