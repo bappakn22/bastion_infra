@@ -6,7 +6,13 @@ terraform {
       version = ">=4.0.0"
     }
   }
-
+backend "azurerm" {
+    resource_group_name  = "bappa-remotestate-rg"
+    storage_account_name = "bappastatefiles"
+    container_name       = "statecfiles"
+    key                  = "bastiondev.tfstate"
+  }
+  
 
 }
 
