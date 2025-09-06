@@ -29,7 +29,9 @@ stages:
            provider: 'azurerm'
            command: 'init'
            workingDirectory: '$(WORK_DIR)'
-           backendServiceArm: $(SERVICE_CONNECTION)
+           backendServiceArm: '$(SERVICE_CONNECTION)'
+           backendAzureRmOverrideSubscriptionID: '8b10287d-12d6-41e3-b62c-33457c006e96'
+           backendAzureRmResourceGroupName: 'bappa-remotestate-rg'
            backendAzureRmStorageAccountName: 'bappastatefiles'
            backendAzureRmContainerName: 'statecfiles'
            backendAzureRmKey: 'bastiondev.tfstate'
