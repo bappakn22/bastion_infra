@@ -50,3 +50,12 @@ stages:
            command: 'plan'
            workingDirectory: '$(WORK_DIR)'
            environmentServiceNameAzureRM: '$(SERVICE_CONNECTION)'
+
+ - stage: codescanning
+   jobs:
+     - job: tfsecscanning
+       steps:
+       - task: tfsec@1
+         inputs:
+           version: 'v1.26.0'
+           dir: '$(WORK_DIR)'
